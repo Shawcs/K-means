@@ -8,7 +8,7 @@ namespace k_means
 {
     class KMean
     {
-        int nbCluster = 3;
+        public static int nbCluster = 3; //usefull for centroide
 
         /// <summary>
         /// Cluster[i] will be the index of the individu i
@@ -85,14 +85,35 @@ namespace k_means
             }
             return Utils.IndexOfMin(distances);
         }
-
-        public static List<Item> CalculCentroide(List<int> cluster, List<Item> listIris)
+        public static List<Item> initListItem(int nbItem,int nbVariable )
         {
             List<Item> result = new List<Item>();
-            for (int i = 0; i < 3; ++i)
+            for (int i = 0; i < nbItem; i++)
             {
-                int nbInCluser = 0;
 
+                Item item = new Item(new List<double>(Enumerable.Repeat(0d,nbVariable)));
+                result.Add(item);
+            }
+            return result;
+
+        }
+
+        public  List<Item> CalculCentroide(List<int> cluster, List<Item> items)
+        {
+     
+            List<Item> result = initListItem(nbCluster, items.ElementAt(0).Variables.Count);
+
+            List <Double> moy = new List<double>();
+
+            for (int i = 0; i < items.Count; ++i)
+            {
+                for (int j = 0; j < items.ElementAt(0).Variables.Count; j++)
+                {
+
+                    moy[j] = items.ElementAt(i).Variables[j];
+
+                }
+            }
                 double sumV1 = 0;
                 double sumV2 = 0;
                 double sumV3 = 0;
@@ -110,7 +131,7 @@ namespace k_means
                         nbInCluser++;
                     }
                 }
-                result.Add(new Item(sumV1 / nbInCluser, sumV2 / nbInCluser, sumV3 / nbInCluser, sumV4 / nbInCluser, "centroide"));
+                result.Add(new Item(List des moyenne , "centroide"));
             }
             return result;
         }
