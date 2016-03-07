@@ -10,7 +10,6 @@ namespace k_means
     {
         static void Main(string[] args)
         {
-
         }
     }
 }
