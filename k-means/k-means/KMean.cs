@@ -29,17 +29,17 @@ namespace k_means
             initData();
 
             List<int> newCluster;
-            int y = 0;
+            int nbLoopCompute = 0;
             do
             {
                 newCluster = new List<int>();
-                seeds = CalculCentroide(cluster, listIris);
+                seeds = CalculCentroide(cluster, items);
                 computeCluster(items, newCluster, seeds);
                 if (IsEquals(newCluster, cluster))
                     break;
                 cluster = newCluster;
-                Console.WriteLine("Calcul cluster " + y);
-                ++y;
+                Console.WriteLine("Calcul cluster " + nbLoopCompute);
+                ++nbLoopCompute;
             } while (true);
             cluster = newCluster;
         }
@@ -49,7 +49,7 @@ namespace k_means
         /// </summary>
         private void initData()
         {
-            Random rand = new Random(); // A tirer aléatoirement
+            Random rand = new Random(); // Randomly sort
             for (int i = 0; i < nbCluster; i++)
             {
                 Item item;
@@ -61,25 +61,29 @@ namespace k_means
             }
         }
 
-        private static void computeCluster(List<Item> listIris, List<int> cluster, List<Item> seeds)
+        private static void computeCluster(List<Item> items, List<int> cluster, List<Item> seeds)
         {
 
-            for (int i = 0; i < listIris.Count; i++)
+            for (int i = 0; i < items.Count; i++)
             {
-                cluster.Insert(i, LePlusProche(seeds, listIris.ElementAt(i)));
+                cluster.Insert(i, getNearestIndex(seeds, items.ElementAt(i)));
             }
         }
 
-        private static int LePlusProche(List<Item> seeds, Item iris)
+        /// <summary>
+        /// Look for the nearest seed from the item.
+        /// </summary>
+        /// <param name="seeds"></param>
+        /// <param name="item"></param>
+        /// <returns></returns>
+        private static int getNearestIndex(List<Item> seeds, Item item)
         {
             List<double> distances = new List<double>();
             for(int i=0; i < seeds.Count;++i)
             {
-                distances.Add(iris.Distance(seeds.ElementAt(i)));
+                distances.Add(item.Distance(seeds.ElementAt(i)));
             }
-            distances.Min(x);
-
-
+            return Utils.IndexOfMin(distances);
         }
 
         public static List<Item> CalculCentroide(List<int> cluster, List<Item> listIris)
@@ -123,6 +127,17 @@ namespace k_means
                 return true;
             }
             return false;
+        }
+
+        private void computeDispersion(List<int> cluster , List<Item> items, List<Item> seed)
+        {
+            List<Item> avgItems = new List<Item>();
+
+            for(int i =0; i < items.Count; ++i)
+            {
+                int clusterItem = cluster.ElementAt(i);
+                Item item = avgItems.ElementAt(clusterItem);
+            }
         }
     }
 }
