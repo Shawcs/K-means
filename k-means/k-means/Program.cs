@@ -10,7 +10,8 @@ namespace k_means
     {
         static void Main(string[] args)
         {
-
+            Reading.ReadFile();
+            Console.ReadKey();
         }
     }
 }

@@ -11,7 +11,7 @@ namespace k_means
     {
         public static List<Item> ReadFile()
         {
-            const string f = @".\wine.data.txt";
+            const string f = @"..\..\wine.data.txt";
             List<Item> lines = new List<Item>();
             using (StreamReader r = new StreamReader(f))
             {
@@ -19,16 +19,24 @@ namespace k_means
                 while ((line = r.ReadLine()) != null)
                 {
                     string[] temp = line.Split(',');
+
                     double[] temps = new double[temp.Length];
 
                     for (int i = 0; i < temp.Length; i++)
                     {
-                         temps[i] = double.Parse(temp[i]);
+                         temps[i] = double.Parse(temp[i].Replace('.',','));
                     }
                     lines.Add(new Item(new List<Double>(temps)));
                 }
             }
+            foreach(Item d in lines)
+            {
+                Console.WriteLine(d);
+            }
+           
+
             Console.WriteLine("file Loaded ! ");
+
             return lines;
         }
     }
