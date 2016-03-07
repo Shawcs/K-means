@@ -81,6 +81,7 @@ namespace k_means
 
 
         }
+
         public static List<Item> initListItem(int nbItem,int nbVariable )
         {
             List<Item> result = new List<Item>();
@@ -94,43 +95,44 @@ namespace k_means
 
         }
 
-        public  List<Item> CalculCentroide(List<int> cluster, List<Item> items)
+        public List<Item> CalculCentroide(List<int> cluster, List<Item> items)
         {
-     
+
             List<Item> result = initListItem(nbCluster, items.ElementAt(0).Variables.Count);
 
-            List <Double> moy = new List<double>();
+            int nbClusters = cluster.Max() + 1;
+            List<int> nbrVariableCuster = new List<int>();
 
-            for (int i = 0; i < items.Count; ++i)
+
+
+            for (int i = 0; i < items.Count; i++)
             {
                 for (int j = 0; j < items.ElementAt(0).Variables.Count; j++)
                 {
-
-                    moy[j] = items.ElementAt(i).Variables[j];
-
+                    int currentCluster = cluster.ElementAt(i);
+                    Item it = result.ElementAt(currentCluster);
+                    it.Variables[j] += items.ElementAt(i).Variables[j];
                 }
             }
-                double sumV1 = 0;
-                double sumV2 = 0;
-                double sumV3 = 0;
-                double sumV4 = 0;
 
-                for (int x = 0; x < listIris.Count; ++x)
+            var listNbItemPerCluster = cluster.GroupBy(x => x).Select(x => new { value = x, count = x.Count() });
+            foreach (var nb in listNbItemPerCluster)
+            {
+                nbrVariableCuster.Add(nb.count);
+            }
+
+            for (int k = 0; k <result.Count; k++)
+            {
+                for (int l = 0; l < result.ElementAt(k).Variables.Count; l++)
                 {
-                    if (cluster.ElementAt(x) == i)
-                    {
-                        Item curentIris = listIris.ElementAt(x);
-                        sumV1 += curentIris.V1;
-                        sumV2 += curentIris.V2;
-                        sumV3 += curentIris.V3;
-                        sumV4 += curentIris.V4;
-                        nbInCluser++;
-                    }
+                    result.ElementAt(k).Variables = result.ElementAt(k).Variables / nbrVariableCuster.ElementAt(k); 
+
                 }
-                result.Add(new Item(List des moyenne , "centroide"));
-            }
+            } 
+
             return result;
         }
+
 
         private static Boolean IsEquals(List<int> list1, List<int> list2)
         {
