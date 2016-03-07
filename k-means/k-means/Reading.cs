@@ -29,11 +29,11 @@ namespace k_means
                     lines.Add(new Item(new List<Double>(temps)));
                 }
             }
+
             foreach(Item d in lines)
             {
                 Console.WriteLine(d);
             }
-           
 
             Console.WriteLine("file Loaded ! ");
 
