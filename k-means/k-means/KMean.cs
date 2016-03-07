@@ -78,6 +78,8 @@ namespace k_means
                 distances.Add(iris.Distance(seeds.ElementAt(i)));
             }
             distances.Min(x);
+
+
         }
 
         public static List<Item> CalculCentroide(List<int> cluster, List<Item> listIris)
