@@ -29,7 +29,7 @@ namespace k_means
         }
 
         /// <summary>
-        /// Compute the distance between two items based on their variables.
+        /// Compute the Euclidian distance between two items based on their variables.
         /// </summary>
         /// <param name="b"></param>
         /// <returns></returns>
@@ -38,9 +38,9 @@ namespace k_means
             double total = 0;
             for(int i=0; i < variables.Count; ++i)
             {
-                total += Math.Pow(variables.ElementAt(i) - b.Variables.ElementAt(0),2.0);
+                total += Math.Pow(variables.ElementAt(i) - b.Variables.ElementAt(i),2.0);
             }
-            return Math.Sqrt(total);
+            return total;
         }
 
         public override string ToString()

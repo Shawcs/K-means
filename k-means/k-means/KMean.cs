@@ -8,7 +8,7 @@ namespace k_means
 {
     class KMean
     {
-        public static int nbCluster = 3; //usefull for centroide
+        public static int nbCluster = 3;
 
         /// <summary>
         /// Cluster[i] will be the index of the individu i
@@ -22,8 +22,17 @@ namespace k_means
 
         List<Item> items;
 
+        public double compute(List<Item> data, int nbClutser, int restart)
+        {
+            //TODO modifier la fct compute du dessous pour faire en sorte de recup aussi les cluster.
+            return 0;
+        }
 
-        private void compute(List<Item> items)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="items"></param>
+        public double compute(List<Item> items)
         {
             this.items = items;
             initData();
@@ -36,34 +45,41 @@ namespace k_means
                 seeds = CalculCentroide(cluster, items);
                 computeCluster(items, newCluster, seeds);
                 if (IsEquals(newCluster, cluster))
+                {
+                    Console.WriteLine("Cluster equals find ! ");
                     break;
+                }
+                    
                 cluster = newCluster;
                 Console.WriteLine("Calcul cluster " + nbLoopCompute);
                 ++nbLoopCompute;
             } while (true);
             cluster = newCluster;
+            return computeDispersion(cluster, items, seeds);
         }
 
         /// <summary>
-        /// Define de k seed
+        /// Asign a cluster for each item.
         /// </summary>
         private void initData()
         {
-            Random rand = new Random(); // Randomly sort
-            for (int i = 0; i < nbCluster; i++)
+            int seed = unchecked((int)DateTime.Now.Ticks);
+            Random rand = new Random(seed); // Randomly sort
+            for (int i = 0; i < items.Count; i++)
             {
-                Item item;
-                do
-                {
-                    item = items.ElementAt(rand.Next(0, items.Count - 1));
-                } while (seeds.Contains(item));
-                seeds.Add(item);
+                int randIndex = rand.Next(0, nbCluster);
+                cluster.Add(randIndex);
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="items"></param>
+        /// <param name="cluster"></param>
+        /// <param name="seeds"></param>
         private static void computeCluster(List<Item> items, List<int> cluster, List<Item> seeds)
         {
-
             for (int i = 0; i < items.Count; i++)
             {
                 cluster.Insert(i, getNearestIndex(seeds, items.ElementAt(i)));
@@ -86,12 +102,17 @@ namespace k_means
             return Utils.IndexOfMin(distances);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="nbItem"></param>
+        /// <param name="nbVariable"></param>
+        /// <returns></returns>
         public static List<Item> initListItem(int nbItem,int nbVariable )
         {
             List<Item> result = new List<Item>();
             for (int i = 0; i < nbItem; i++)
             {
-
                 Item item = new Item(new List<double>(Enumerable.Repeat(0d,nbVariable)));
                 result.Add(item);
             }
@@ -99,15 +120,16 @@ namespace k_means
 
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="cluster"></param>
+        /// <param name="items"></param>
+        /// <returns></returns>
         public List<Item> CalculCentroide(List<int> cluster, List<Item> items)
         {
 
             List<Item> result = initListItem(nbCluster, items.ElementAt(0).Variables.Count);
-
-            int nbClusters = cluster.Max() + 1;
-            List<int> nbrVariableCuster = new List<int>();
-
-
 
             for (int i = 0; i < items.Count; i++)
             {
@@ -119,25 +141,21 @@ namespace k_means
                 }
             }
 
-            var listNbItemPerCluster = cluster.GroupBy(x => x).Select(x => new { value = x, count = x.Count() });
-            foreach (var nb in listNbItemPerCluster)
+            divide(result, cluster);
+            Console.WriteLine("Seed : ");
+            foreach(Item i in result)
             {
-                nbrVariableCuster.Add(nb.count);
+                Console.WriteLine(i.ToString());
             }
-
-            for (int k = 0; k <result.Count; k++)
-            {
-                for (int l = 0; l < result.ElementAt(k).Variables.Count; l++)
-                {
-                    result.ElementAt(k).Variables = result.ElementAt(k).Variables / nbrVariableCuster.ElementAt(k); 
-
-                }
-            } 
-
             return result;
         }
-
-
+        
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="list1"></param>
+        /// <param name="list2"></param>
+        /// <returns></returns>
         private static Boolean IsEquals(List<int> list1, List<int> list2)
         {
             if (list1.Count == list2.Count)
@@ -152,14 +170,60 @@ namespace k_means
             return false;
         }
 
-        private void computeDispersion(List<int> cluster , List<Item> items, List<Item> seed)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="cluster"></param>
+        /// <param name="items"></param>
+        /// <param name="seed"></param>
+        /// <returns></returns>
+        private double computeDispersion(List<int> cluster, List<Item> items, List<Item> seed)
         {
-            List<Item> avgItems = new List<Item>();
+            if (items == null || items.Count == 0)
+            {
+                throw new ArgumentException("Empty item");
+            }
 
-            for(int i =0; i < items.Count; ++i)
+            List<Item> avgItems = initListItem(seed.Count, items.ElementAt(0).Variables.Count);
+
+            for (int i = 0; i < items.Count; ++i)
             {
                 int clusterItem = cluster.ElementAt(i);
-                Item item = avgItems.ElementAt(clusterItem);
+                Item item = items.ElementAt(i);
+                for (int x = 0; x < item.Variables.Count; ++x)
+                {
+                    avgItems.ElementAt(clusterItem).Variables[x] += Math.Pow(item.Variables.ElementAt(x) - seed.ElementAt(clusterItem).Variables.ElementAt(x),2.0);
+                }
+            }
+            // divide(avgItems, cluster);
+
+            double total = 0;
+            foreach(Item clusterDispersion in avgItems)
+            {
+                foreach(double variable in clusterDispersion.Variables)
+                {
+                    total += variable;
+                }
+            }
+
+            return total;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="items"></param>
+        /// <param name="cluster"></param>
+        private void divide(List<Item> items, List<int> cluster)
+        {
+            IEnumerable<KeyValuePair<int, int>> listNbItemPerCluster = cluster.GroupBy(x => x).Select(x => new KeyValuePair<int, int>(x.ElementAt(0), x.Count()));
+            for (int k = 0; k < listNbItemPerCluster.Count(); k++)
+            {
+                for (int l = 0; l < items.ElementAt(k).Variables.Count; l++)
+                {
+                    int index = listNbItemPerCluster.ElementAt(k).Key;
+                    items.ElementAt(index).Variables[l] = items.ElementAt(index).Variables.ElementAt(l) / (double)listNbItemPerCluster.ElementAt(k).Value;
+                }
             }
         }
     }

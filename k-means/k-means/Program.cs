@@ -10,7 +10,9 @@ namespace k_means
     {
         static void Main(string[] args)
         {
-            Reading.ReadFile();
+            List<Item> list = Reading.ReadFile();
+            KMean algo = new KMean();
+            algo.compute(list);
             Console.ReadKey();
         }
     }
