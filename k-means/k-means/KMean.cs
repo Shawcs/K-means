@@ -63,7 +63,8 @@ namespace k_means
                 ++nbLoopCompute;
             } while (true);
             cluster = newCluster;
-
+         
+            Result newResult = new Result(cluster, computeDispersion); // here is ok ???
             return computeDispersion(cluster, items, seeds);
         }
 
