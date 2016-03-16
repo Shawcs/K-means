@@ -24,7 +24,15 @@ namespace k_means
 
         public double compute(List<Item> data, int nbClutser, int restart)
         {
+
             //TODO modifier la fct compute du dessous pour faire en sorte de recup aussi les cluster.
+            while (restart != 0)
+            {
+
+
+            }
+            Console.WriteLine("finish computation finished");
+
             return 0;
         }
 
@@ -55,6 +63,7 @@ namespace k_means
                 ++nbLoopCompute;
             } while (true);
             cluster = newCluster;
+
             return computeDispersion(cluster, items, seeds);
         }
 
