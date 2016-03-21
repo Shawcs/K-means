@@ -8,20 +8,20 @@ namespace k_means
 {
     class Result
     {
-        private List<int> Cluster;
-        private Func<List<int>, List<Item>, List<Item>, double> computeDispersion;
-        private double Dispersion;
+        private List<int> cluster;
+        private double v;
 
-        public Result(List<int> cluster, Func<List<int>, List<Item>, List<Item>, double> computeDispersion)
+        public Result(List<int> cluster, double v)
         {
-            Cluster = cluster;
-            this.computeDispersion = computeDispersion;
+            this.cluster = cluster;
+            this.v = v;
         }
-
-        Result (List<int> Cluster, double Dispersion)
+        public override string ToString()
         {
-            this.Cluster = Cluster;
-            this.Dispersion = Dispersion;
+            StringBuilder strB = new StringBuilder();
+            strB.Append("(");
+                strB.Append(v).Append(" ; ");      
+            return strB.ToString();
         }
 
 

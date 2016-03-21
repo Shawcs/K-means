@@ -12,7 +12,8 @@ namespace k_means
         {
             List<Item> list = Reading.ReadFile();
             KMean algo = new KMean();
-            algo.compute(list);
+           // algo.compute(list);
+            algo.compute(list, 2, 2);
             Console.ReadKey();
         }
     }
