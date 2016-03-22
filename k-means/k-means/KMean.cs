@@ -22,11 +22,11 @@ namespace k_means
 
         List<Item> items;
 
-        public double compute(List<Item> data, int nbClutser, int restart)
+        public Result compute(List<Item> data, int nbClutser, int restart)
         {
 
             //TODO 
-            List<double> bestResult = new List<double>();
+            List<Result> bestResult = new List<Result>();
 
             while (restart != 0)
             {           
@@ -34,16 +34,23 @@ namespace k_means
                 restart -= restart;
             }
 
-
+            Result min_temp = new Result(new List<int>(), double.MaxValue);
+            foreach(Result r in bestResult)
+            {
+                if (min_temp.Dispersion > r.Dispersion)
+                {
+                    min_temp = r;
+                }                     
+            }
             Console.WriteLine("computation finished");
-            return 0;
+            return min_temp;
         }
-
+    
         /// <summary>
         /// 
         /// </summary>
         /// <param name="items"></param>
-        public double compute(List<Item> items)
+        public Result compute(List<Item> items)
         {
             this.items = items;
             initData();
@@ -67,8 +74,8 @@ namespace k_means
             } while (true);
             cluster = newCluster;
          
-            Result newResult = new Result(cluster, computeDispersion(cluster, items, seeds)); //ok ???
-            return computeDispersion(cluster, items, seeds);
+            
+            return new Result(cluster, computeDispersion(cluster, items, seeds));
         }
 
         /// <summary>
